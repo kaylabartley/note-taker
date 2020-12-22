@@ -39,8 +39,8 @@ const getNotes = () =>
     return response.json();
   })
   .then(noteData => {
-    console.log(noteData);
-    printResults(noteData);
+    console.log(JSON.stringify(noteData));
+    return noteData;
   });
 
 const saveNote = (note) =>
@@ -137,7 +137,7 @@ const handleRenderSaveBtn = () => {
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
-  let jsonNotes = await notes.json();
+  let jsonNotes = await notes;
   if (window.location.pathname === '/notes') {
     noteList.forEach((el) => (el.innerHTML = ''));
   }
@@ -145,32 +145,32 @@ const renderNoteList = async (notes) => {
   let noteListItems = [];
 
   // Returns HTML element with or without a delete button
-  const createLi = (text, delBtn = true) => {
-    const liEl = document.createElement('li');
-    liEl.classList.add('list-group-item');
+const createLi = (text, delBtn = true) => {
+  const liEl = document.createElement('li');
+  liEl.classList.add('list-group-item');
 
-    const spanEl = document.createElement('span');
-    spanEl.innerText = text;
-    spanEl.addEventListener('click', handleNoteView);
+  const spanEl = document.createElement('span');
+  spanEl.innerText = text;
+  spanEl.addEventListener('click', handleNoteView);
 
-    liEl.append(spanEl);
+  liEl.append(spanEl);
 
-    if (delBtn) {
-      const delBtnEl = document.createElement('i');
-      delBtnEl.classList.add(
-        'fas',
-        'fa-trash-alt',
-        'float-right',
-        'text-danger',
-        'delete-note'
-      );
-      delBtnEl.addEventListener('click', handleNoteDelete);
+  if (delBtn) {
+    const delBtnEl = document.createElement('i');
+    delBtnEl.classList.add(
+      'fas',
+      'fa-trash-alt',
+      'float-right',
+      'text-danger',
+      'delete-note'
+    );
+    delBtnEl.addEventListener('click', handleNoteDelete);
 
-      liEl.append(delBtnEl);
-    }
+    liEl.append(delBtnEl);
+  }
 
-    return liEl;
-  };
+  return liEl;
+};
 
   if (jsonNotes.length === 0) {
     noteListItems.push(createLi('No saved Notes', false));

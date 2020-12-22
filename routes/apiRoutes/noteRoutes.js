@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { findById, createNewNote, validateNote } = require('../../lib/notes');
+const { deleteNotebyID, createNewNote, validateNote } = require('../../lib/notes');
 const { notes } = require('../../db/db');
 
 router.get('/notes', (req, res) => {
@@ -18,8 +18,11 @@ router.get('/notes/:id', (req, res) => {
 });
 
 router.post('/notes', (req, res) => {
-  // set id based on what the next index of the array will be
-  req.body.id = notes.length.toString();
+  if(notes.length === 0){
+    req.body.id = "0";
+  }else{
+      req.body.id = notes.length.toString();
+  }
 
   if (!validateNote(req.body)) {
     res.status(400).send('The note is not properly formatted.');
@@ -30,8 +33,8 @@ router.post('/notes', (req, res) => {
 });
 
 router.delete('/notes/:id', (req, res) => {
-    notes=notes.splice(req.params.id);
-    res.json(notes);
+    let note = deleteNotebyID(req.params.id, notes);
+    res.json(note);
 });
 
 module.exports = router;
